@@ -17,7 +17,7 @@ I got sick of not having a simple solution to take screenshots and screencasts. 
 * [xclip](https://github.com/astrand/xclip)
 
 ### Installation
-```
+```bash
 # Download the rofi-screenshot source code, save as rofi-screenshot
 # and make it executeable
 $ curl -L https://git.io/rofi-screenshot > rofi-screenshot && chmod u+x rofi-screenshot

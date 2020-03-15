@@ -3,7 +3,7 @@
 ![](https://imgur.com/7io5BKJ.gif)
 I got sick of not having a simple solution to take screenshots and screencasts. Plus there's so many different things I might want to do I struggle to find key bindings for all of them.
 
-### Features:
+### Features
 * Capture a region to the clipboard or directory
 * Capture the whole screen to the clipboard or directory
 * Record a specific region and save as a gif or MP4

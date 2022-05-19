@@ -21,89 +21,89 @@ video_to_gif() {
 }
 
 countdown() {
-  notify-send "Screenshot" "Recording in 3 seconds" -t 1000
+  notify-send --app-name="screenshot" "Screenshot" "Recording in 3" -t 1000
   sleep 1
-  notify-send "Screenshot" "Recording in 2 seconds" -t 1000
+  notify-send --app-name="screenshot" "Screenshot" "Recording in 2" -t 1000
   sleep 1
-  notify-send "Screenshot" "Recording in 1 seconds" -t 1000
+  notify-send --app-name="screenshot" "Screenshot" "Recording in 1" -t 1000
   sleep 1
 }
 
 crtc() {
-  notify-send "Screenshot" "Select a region to capture"
-  ffcast -q $(slop -n -f '-g %g ') png /tmp/screenshot_clip.png
+  notify-send --app-name="screenshot" "Screenshot" "Select a region to capture"
+  ffcast -q "$(slop -n -f '-g %g ')" png /tmp/screenshot_clip.png
   xclip -selection clipboard -t image/png /tmp/screenshot_clip.png
   rm /tmp/screenshot_clip.png
-  notify-send "Screenshot" "Region copied to Clipboard"
+  notify-send --app-name="screenshot" "Screenshot" "Region copied to Clipboard"
 }
 
 crtf() {
-  notify-send "Screenshot" "Select a region to capture"
+  notify-send --app-name="screenshot" "Screenshot" "Select a region to capture"
   dt=$(date '+%d-%m-%Y %H:%M:%S')
-  ffcast -q $(slop -n -f '-g %g ') png "$screenshot_directory/$dt.png"
-  notify-send "Screenshot" "Region saved to $screenshot_directory"
+  ffcast -q "$(slop -n -f '-g %g ')" png "$screenshot_directory/$dt.png"
+  notify-send --app-name="screenshot" "Screenshot" "Region saved to ${screenshot_directory//${HOME}/~}"
 }
 
 cstc() {
   ffcast -q png /tmp/screenshot_clip.png
   xclip -selection clipboard -t image/png /tmp/screenshot_clip.png
   rm /tmp/screenshot_clip.png
-  notify-send "Screenshot" "Screenshot copied to Clipboard"
+  notify-send --app-name="screenshot" "Screenshot" "Screenshot copied to Clipboard"
 }
 
 cstf() {
   dt=$(date '+%d-%m-%Y %H:%M:%S')
   ffcast -q png "$screenshot_directory/$dt.png"
-  notify-send "Screenshot" "Screenshot saved to $screenshot_directory"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
 rgrtf() {
-  notify-send "Screenshot" "Select a region to record"
+  notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
   dt=$(date '+%d-%m-%Y %H:%M:%S')
-  ffcast -q $(slop -n -f '-g %g ' && countdown) rec /tmp/screenshot_gif.mp4
-  notify-send "Screenshot" "Converting to gif... (this can take a while)"
+  ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec /tmp/screenshot_gif.mp4
+  notify-send --app-name="screenshot" "Screenshot" "Converting to gif… (can take a while)"
   video_to_gif /tmp/screenshot_gif.mp4 "$screenshot_directory/$dt.gif"
   rm /tmp/screenshot_gif.mp4
-  notify-send "Screenshot" "Recording saved to $screenshot_directory"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
 rgstf() {
   countdown
   dt=$(date '+%d-%m-%Y %H:%M:%S')
   ffcast -q rec /tmp/screenshot_gif.mp4
-  notify-send "Screenshot" "Converting to gif... (this can take a while)"
+  notify-send --app-name="screenshot" "Screenshot" "Converting to gif… (can take a while)"
   video_to_gif /tmp/screenshot_gif.mp4 "$screenshot_directory/$dt.gif"
   rm /tmp/screenshot_gif.mp4
-  notify-send "Screenshot" "Recording saved to $screenshot_directory"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
 rvrtf() {
-  notify-send "Screenshot" "Select a region to record"
+  notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
   dt=$(date '+%d-%m-%Y %H:%M:%S')
-  ffcast -q $(slop -n -f '-g %g ' && countdown) rec "$screenshot_directory/$dt.mp4"
-  notify-send "Screenshot" "Recording saved to $screenshot_directory"
+  ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec "$screenshot_directory/$dt.mp4"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
 rvstf() {
   countdown
   dt=$(date '+%d-%m-%Y %H:%M:%S')
   ffcast -q rec "$screenshot_directory/$dt.mp4"
-  notify-send "Screenshot" "Recording saved to $screenshot_directory"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
 get_options() {
-  echo "  Capture Region  Clip"
-  echo "  Capture Region  File"
-  echo "  Capture Screen  Clip"
-  echo "  Capture Screen  File"
-  echo "  Record Region  File (GIF)"
-  echo "  Record Screen  File (GIF)"
-  echo "  Record Region  File (MP4)"
-  echo "  Record Screen  File (MP4)"
+  echo "  Region  Clip"
+  echo "  Region  File"
+  echo "  Screen  Clip"
+  echo "  Screen  File"
+  echo "  Region  File (GIF)"
+  echo "  Screen  File (GIF)"
+  echo "  Region  File (MP4)"
+  echo "  Screen  File (MP4)"
 }
 
 check_deps() {
-  if ! hash $1 2>/dev/null; then
+  if ! hash "$1" 2>/dev/null; then
     echo "Error: This script requires $1"
     exit 1
   fi
@@ -120,12 +120,12 @@ main() {
   if [[ $1 == '--help' ]] || [[ $1 = '-h' ]]
   then
     echo ### rofi-screenshot
-    echo USAGE: rofi-screenshot [OPTION]
-    echo \(no option\)
+    echo "USAGE: rofi-screenshot [OPTION]"
+    echo "(no option)"
     echo "    show the screenshot menu"
-    echo -s, --stop
+    echo "-s, --stop"
     echo "    stop recording"
-    echo -h, --help
+    echo "-h, --help"
     echo "    this screen"
     exit 1
   fi
@@ -146,28 +146,28 @@ main() {
 
   # run the selected command
   case $choice in
-    '  Capture Region  Clip')
+    '  Region  Clip')
       crtc
       ;;
-    '  Capture Region  File')
+    '  Region  File')
       crtf
       ;;
-    '  Capture Screen  Clip')
+    '  Screen  Clip')
       cstc
       ;;
-    '  Capture Screen  File')
+    '  Screen  File')
       cstf
       ;;
-    '  Record Region  File (GIF)')
+    '  Region  File (GIF)')
       rgrtf
       ;;
-    '  Record Screen  File (GIF)')
+    '  Screen  File (GIF)')
       rgstf
       ;;
-    '  Record Region  File (MP4)')
+    '  Region  File (MP4)')
       rvrtf
       ;;
-    '  Record Screen  File (MP4)')
+    '  Screen  File (MP4)')
       rvstf
       ;;
   esac
@@ -180,5 +180,4 @@ main $1 &
 
 exit 0
 
-!/bin/bash
-
+! /bin/bash

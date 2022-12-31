@@ -3,7 +3,7 @@
 ## rofi-screenshot
 ## Author: ceuk @ github
 ## Licence: WTFPL
-## Usage: 
+## Usage:
 ##    show the menu with rofi-screenshot
 ##    stop recording with rofi-screenshot -s
 
@@ -120,13 +120,15 @@ main() {
   if [[ $1 == '--help' ]] || [[ $1 = '-h' ]]
   then
     echo ### rofi-screenshot
-    echo "USAGE: rofi-screenshot [OPTION]"
+    echo "USAGE: rofi-screenshot [OPTION] <argument>"
     echo "(no option)"
     echo "    show the screenshot menu"
     echo "-s, --stop"
     echo "    stop recording"
     echo "-h, --help"
     echo "    this screen"
+    echo "-d, --directory <directory>"
+    echo "    set the screenshot directory"
     exit 1
   fi
 
@@ -135,6 +137,17 @@ main() {
     pkill -fxn '(/\S+)*ffmpeg\s.*\sx11grab\s.*'
     exit 1
   fi
+
+  if [[ $1 = '--directory' ]] || [[ $1 = '-d' ]]
+  then
+    if [[ ! -d $2 ]]
+    then
+      echo "Directory does not exist!"
+      exit 1
+    fi
+    screenshot_directory="$2"
+  fi
+
 
   # Get choice from rofi
   choice=$( (get_options) | rofi -dmenu -i -fuzzy -p "Screenshot" )
@@ -176,7 +189,7 @@ main() {
   set -e
 }
 
-main $1 &
+main "$@" &
 
 exit 0
 

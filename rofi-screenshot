@@ -10,9 +10,6 @@
 # Screenshot directory
 screenshot_directory="$HOME/Pictures/Screenshots"
 
-# Config location
-config_path="$HOME/.config/rofi-screenshot"
-
 # Default date format
 default_date_format="+%d-%m-%Y %H:%M:%S"
 
@@ -135,6 +132,9 @@ main() {
     echo "    this screen"
     echo "-d, --directory <directory>"
     echo "    set the screenshot directory"
+    echo "-t, --timestamp <format>"
+    echo "    set the format used for timestamps, in the format the date"
+    echo "    command expects (default '+%d-%m-%Y %H:%M:%S')"
     exit 1
   fi
 
@@ -155,8 +155,8 @@ main() {
   fi
 
   date_format="$default_date_format"
-  if [[ -f $config_path ]]; then
-    source $config_path
+  if [[ $1 = '--timestamp' ]] || [[ $1 = '-t' ]]; then
+    date_format="$2"
   fi
 
   # Get choice from rofi

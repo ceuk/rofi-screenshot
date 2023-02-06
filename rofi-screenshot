@@ -10,6 +10,12 @@
 # Screenshot directory
 screenshot_directory="$HOME/Pictures/Screenshots"
 
+# Config location
+config_path="$HOME/.config/rofi-screenshot"
+
+# Default date format
+default_date_format="+%d-%m-%Y %H:%M:%S"
+
 # set ffmpeg defaults
 ffmpeg() {
     command ffmpeg -hide_banner -loglevel error -nostdin "$@"
@@ -39,7 +45,7 @@ crtc() {
 
 crtf() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to capture"
-  dt=$(date '+%d-%m-%Y %H:%M:%S')
+  dt=$1
   ffcast -q "$(slop -n -f '-g %g ')" png "$screenshot_directory/$dt.png"
   notify-send --app-name="screenshot" "Screenshot" "Region saved to ${screenshot_directory//${HOME}/~}"
 }
@@ -52,14 +58,14 @@ cstc() {
 }
 
 cstf() {
-  dt=$(date '+%d-%m-%Y %H:%M:%S')
+  dt=$1
   ffcast -q png "$screenshot_directory/$dt.png"
   notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
 rgrtf() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
-  dt=$(date '+%d-%m-%Y %H:%M:%S')
+  dt=$1
   ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec /tmp/screenshot_gif.mp4
   notify-send --app-name="screenshot" "Screenshot" "Converting to gif… (can take a while)"
   video_to_gif /tmp/screenshot_gif.mp4 "$screenshot_directory/$dt.gif"
@@ -69,7 +75,7 @@ rgrtf() {
 
 rgstf() {
   countdown
-  dt=$(date '+%d-%m-%Y %H:%M:%S')
+  dt=$1
   ffcast -q rec /tmp/screenshot_gif.mp4
   notify-send --app-name="screenshot" "Screenshot" "Converting to gif… (can take a while)"
   video_to_gif /tmp/screenshot_gif.mp4 "$screenshot_directory/$dt.gif"
@@ -79,14 +85,14 @@ rgstf() {
 
 rvrtf() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
-  dt=$(date '+%d-%m-%Y %H:%M:%S')
+  dt=$1
   ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec "$screenshot_directory/$dt.mp4"
   notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
 rvstf() {
   countdown
-  dt=$(date '+%d-%m-%Y %H:%M:%S')
+  dt=$1
   ffcast -q rec "$screenshot_directory/$dt.mp4"
   notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
@@ -148,6 +154,10 @@ main() {
     screenshot_directory="$2"
   fi
 
+  date_format="$default_date_format"
+  if [[ -f $config_path ]]; then
+    source $config_path
+  fi
 
   # Get choice from rofi
   choice=$( (get_options) | rofi -dmenu -i -fuzzy -p "Screenshot" )
@@ -157,31 +167,34 @@ main() {
       exit 1
   fi
 
+  cmd='date "${date_format}"'
+  dt=$(eval $cmd)
+
   # run the selected command
   case $choice in
     '  Region  Clip')
       crtc
       ;;
     '  Region  File')
-      crtf
+      crtf "$dt"
       ;;
     '  Screen  Clip')
       cstc
       ;;
     '  Screen  File')
-      cstf
+      cstf "$dt"
       ;;
     '  Region  File (GIF)')
-      rgrtf
+      rgrtf "$dt"
       ;;
     '  Screen  File (GIF)')
-      rgstf
+      rgstf "$dt"
       ;;
     '  Region  File (MP4)')
-      rvrtf
+      rvrtf "$dt"
       ;;
     '  Screen  File (MP4)')
-      rvstf
+      rvstf "$dt"
       ;;
   esac
 

@@ -15,11 +15,11 @@ default_date_format="+%d-%m-%Y %H:%M:%S"
 
 # set ffmpeg defaults
 ffmpeg() {
-    command ffmpeg -hide_banner -loglevel error -nostdin "$@"
+  command ffmpeg -hide_banner -loglevel error -nostdin "$@"
 }
 
 video_to_gif() {
-    ffmpeg -i "$1" -vf palettegen -f image2 -c:v png - |
+  ffmpeg -i "$1" -vf palettegen -f image2 -c:v png - |
     ffmpeg -i "$1" -i - -filter_complex paletteuse "$2"
 }
 
@@ -106,7 +106,7 @@ get_options() {
 }
 
 check_deps() {
-  if ! hash "$1" 2>/dev/null; then
+  if ! hash "$1" 2> /dev/null; then
     echo "Error: This script requires $1"
     exit 1
   fi
@@ -120,8 +120,7 @@ main() {
   check_deps xclip
   check_deps rofi
 
-  if [[ $1 == '--help' ]] || [[ $1 = '-h' ]]
-  then
+  if [[ $1 == '--help' ]] || [[ $1 = '-h' ]]; then
     echo ### rofi-screenshot
     echo "USAGE: rofi-screenshot [OPTION] <argument>"
     echo "(no option)"
@@ -138,16 +137,13 @@ main() {
     exit 1
   fi
 
-  if [[ $1 = '--stop' ]] || [[ $1 = '-s' ]]
-  then
+  if [[ $1 = '--stop' ]] || [[ $1 = '-s' ]]; then
     pkill -fxn '(/\S+)*ffmpeg\s.*\sx11grab\s.*'
     exit 1
   fi
 
-  if [[ $1 = '--directory' ]] || [[ $1 = '-d' ]]
-  then
-    if [[ ! -d $2 ]]
-    then
+  if [[ $1 = '--directory' ]] || [[ $1 = '-d' ]]; then
+    if [[ ! -d $2 ]]; then
       echo "Directory does not exist!"
       exit 1
     fi
@@ -160,11 +156,11 @@ main() {
   fi
 
   # Get choice from rofi
-  choice=$( (get_options) | rofi -dmenu -i -fuzzy -p "Screenshot" )
+  choice=$( (get_options) | rofi -dmenu -i -fuzzy -p "Screenshot")
 
   # If user has not picked anything, exit
-  if [[ -z "${choice// }" ]]; then
-      exit 1
+  if [[ -z "${choice// /}" ]]; then
+    exit 1
   fi
 
   cmd='date "${date_format}"'

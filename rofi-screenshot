@@ -157,7 +157,7 @@ main() {
   # parse short options
   OPTIND=1
   date_format="$default_date_format"
-  while getopts "hd:t:" opt; do
+  while getopts "hds:t:" opt; do
     case "$opt" in
       'h')
         show_help
@@ -169,6 +169,10 @@ main() {
         ;;
       't')
         date_format="$OPTARG"
+        ;;
+      's')
+        pkill -fxn '(/\S+)*ffmpeg\s.*\sx11grab\s.*'
+        exit 1
         ;;
       '?')
         show_help

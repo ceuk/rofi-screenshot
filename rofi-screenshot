@@ -20,7 +20,7 @@ ffmpeg() {
 
 video_to_gif() {
   ffmpeg -i "$1" -vf palettegen -f image2 -c:v png - |
-    ffmpeg -i "$1" -i - -filter_complex paletteuse "$2"
+  ffmpeg -i "$1" -i - -filter_complex paletteuse "$2"
 }
 
 countdown() {
@@ -34,8 +34,8 @@ countdown() {
 
 crtc() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to capture"
-  ffcast -q "$(slop -n -f '-g %g ')" png /tmp/screenshot_clip.png
-  xclip -selection clipboard -t image/png /tmp/screenshot_clip.png
+  grim -g "$(slurp)" -t png /tmp/screenshot_clip.png
+  wl-copy -t image/png < /tmp/screenshot_clip.png
   rm /tmp/screenshot_clip.png
   notify-send --app-name="screenshot" "Screenshot" "Region copied to Clipboard"
 }
@@ -43,27 +43,27 @@ crtc() {
 crtf() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to capture"
   dt=$1
-  ffcast -q "$(slop -n -f '-g %g ')" png "$screenshot_directory/$dt.png"
+  grim -g "$(slurp)" -t png "$screenshot_directory/$dt.png"
   notify-send --app-name="screenshot" "Screenshot" "Region saved to ${screenshot_directory//${HOME}/~}"
 }
 
 cstc() {
-  ffcast -q png /tmp/screenshot_clip.png
-  xclip -selection clipboard -t image/png /tmp/screenshot_clip.png
+  grim -t png /tmp/screenshot_clip.png
+  wl-copy -t image/png < /tmp/screenshot_clip.png
   rm /tmp/screenshot_clip.png
   notify-send --app-name="screenshot" "Screenshot" "Screenshot copied to Clipboard"
 }
 
 cstf() {
   dt=$1
-  ffcast -q png "$screenshot_directory/$dt.png"
+  grim -t png "$screenshot_directory/$dt.png"
   notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
 rgrtf() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
   dt=$1
-  ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec /tmp/screenshot_gif.mp4
+  wf-recorder -g "$(slurp && countdown)" -f /tmp/screenshot_gif.mp4
   notify-send --app-name="screenshot" "Screenshot" "Converting to gif… (can take a while)"
   video_to_gif /tmp/screenshot_gif.mp4 "$screenshot_directory/$dt.gif"
   rm /tmp/screenshot_gif.mp4
@@ -73,7 +73,7 @@ rgrtf() {
 rgstf() {
   countdown
   dt=$1
-  ffcast -q rec /tmp/screenshot_gif.mp4
+  wf-recorder -f /tmp/screenshot_gif.mp4
   notify-send --app-name="screenshot" "Screenshot" "Converting to gif… (can take a while)"
   video_to_gif /tmp/screenshot_gif.mp4 "$screenshot_directory/$dt.gif"
   rm /tmp/screenshot_gif.mp4
@@ -83,14 +83,14 @@ rgstf() {
 rvrtf() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
   dt=$1
-  ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec "$screenshot_directory/$dt.mp4"
+  wf-recorder -g "$(slurp && countdown)" -f "$screenshot_directory/$dt.mp4"
   notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
 rvstf() {
   countdown
   dt=$1
-  ffcast -q rec "$screenshot_directory/$dt.mp4"
+  wf-recorder -f "$screenshot_directory/$dt.mp4"
   notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
 }
 
@@ -138,9 +138,9 @@ check_directory() {
 main() {
   # check dependencies
   check_deps slop
-  check_deps ffcast
+  check_deps wf-recorder
   check_deps ffmpeg
-  check_deps xclip
+  check_deps wl-copy
   check_deps rofi
 
   # rebind long args as short ones
@@ -171,9 +171,9 @@ main() {
         date_format="$OPTARG"
         ;;
       's')
-        pkill -fxn '(/\S+)*ffmpeg\s.*\sx11grab\s.*'
-        exit 1
-        ;;
+		pkill -fxn '(/\S+)*wf-recorder\s.*'
+		exit 1
+		;;
       '?')
         show_help
         exit 1

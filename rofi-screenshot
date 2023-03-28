@@ -142,6 +142,7 @@ main() {
   check_deps ffmpeg
   check_deps wl-copy
   check_deps rofi
+  check_deps grim
 
   # rebind long args as short ones
   for arg in "$@"; do

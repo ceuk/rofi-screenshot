@@ -1,4 +1,4 @@
-## rofi-screenshot
+## rofi-screenshot (Wayland)
 
 ![](https://imgur.com/7io5BKJ.gif)
 
@@ -41,4 +41,5 @@ $ rofi-screenshot -s
 * [rofi](https://github.com/davatorium/rofi)
 * [ffcast](https://github.com/lolilolicon/FFcast)
 * [slop](https://github.com/naelstrof/slop)
-* [xclip](https://github.com/astrand/xclip)
+* [grim](https://sr.ht/~emersion/grim)
+* [wf-recorder](https://github.com/ammen99/wf-recorder)

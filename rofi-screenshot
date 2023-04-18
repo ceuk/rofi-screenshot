@@ -44,7 +44,7 @@ crtf() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to capture"
   dt=$1
   ffcast -q "$(slop -n -f '-g %g ')" png "$screenshot_directory/$dt.png"
-  notify-send --app-name="screenshot" "Screenshot" "Region saved to ${screenshot_directory//${HOME}/~}"
+  notify-send --app-name="screenshot" "Screenshot" "Region saved to ${screenshot_directory//${HOME}/~}/$dt.png"
 }
 
 cstc() {
@@ -57,7 +57,7 @@ cstc() {
 cstf() {
   dt=$1
   ffcast -q png "$screenshot_directory/$dt.png"
-  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}/$dt.png"
 }
 
 rgrtf() {
@@ -67,7 +67,7 @@ rgrtf() {
   notify-send --app-name="screenshot" "Screenshot" "Converting to gif… (can take a while)"
   video_to_gif /tmp/screenshot_gif.mp4 "$screenshot_directory/$dt.gif"
   rm /tmp/screenshot_gif.mp4
-  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}/$dt.gif"
 }
 
 rgstf() {
@@ -77,21 +77,31 @@ rgstf() {
   notify-send --app-name="screenshot" "Screenshot" "Converting to gif… (can take a while)"
   video_to_gif /tmp/screenshot_gif.mp4 "$screenshot_directory/$dt.gif"
   rm /tmp/screenshot_gif.mp4
-  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}/$dt.gif"
 }
 
 rvrtf() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
   dt=$1
   ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec "$screenshot_directory/$dt.mp4"
-  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}/$dt.mp4"
 }
 
 rvstf() {
   countdown
   dt=$1
   ffcast -q rec "$screenshot_directory/$dt.mp4"
-  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}"
+  notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}/$dt.mp4"
+}
+
+stop_recording() {
+  if [ -z "$(pgrep -fxn '(/\S+)*ffmpeg\s.*\sx11grab\s.*')" ]; then
+    notify-send --app-name="screenshot" "Screenshot" "No recording found"
+    exit 1
+  fi
+
+  pkill -fxn '(/\S+)*ffmpeg\s.*\sx11grab\s.*'
+  notify-send --app-name="screenshot" "Screenshot" "Recording stopped"
 }
 
 get_options() {
@@ -103,6 +113,7 @@ get_options() {
   echo "  Screen  File (GIF)"
   echo "  Region  File (MP4)"
   echo "  Screen  File (MP4)"
+  echo "  Stop recording"
 }
 
 check_deps() {
@@ -150,6 +161,7 @@ main() {
       '--help') set -- "$@" '-h' ;;
       '--directory') set -- "$@" '-d' ;;
       '--timestamp') set -- "$@" '-t' ;;
+      '--stop') set -- "$@" '-s' ;;
       *) set -- "$@" "$arg" ;;
     esac
   done
@@ -157,7 +169,7 @@ main() {
   # parse short options
   OPTIND=1
   date_format="$default_date_format"
-  while getopts "hd:t:" opt; do
+  while getopts "hd:t:s" opt; do
     case "$opt" in
       'h')
         show_help
@@ -169,6 +181,10 @@ main() {
         ;;
       't')
         date_format="$OPTARG"
+        ;;
+      's')
+        stop_recording
+        exit 0
         ;;
       '?')
         show_help
@@ -215,6 +231,9 @@ main() {
     '  Screen  File (MP4)')
       rvstf "$dt"
       ;;
+    '  Stop recording')
+      stop_recording
+      ;;
   esac
 
   # done
@@ -226,3 +245,4 @@ main "$@" &
 exit 0
 
 ! /bin/bash
+

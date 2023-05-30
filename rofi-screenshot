@@ -158,7 +158,7 @@ main() {
   # parse short options
   OPTIND=1
   date_format="$default_date_format"
-  while getopts "hds:t:" opt; do
+  while getopts "hd:st:" opt; do
     case "$opt" in
       'h')
         show_help

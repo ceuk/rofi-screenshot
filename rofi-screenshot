@@ -172,7 +172,7 @@ main() {
         date_format="$OPTARG"
         ;;
       's')
-		pkill -fxn '(/\S+)*wf-recorder\s.*'
+		pkill --signal SIGINT -fxn '(/\S+)*wf-recorder\s.*'
 		exit 1
 		;;
       '?')

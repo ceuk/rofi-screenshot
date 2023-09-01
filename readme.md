@@ -36,8 +36,11 @@ $ rofi-screenshot -s
 ```
 **Tip**: Add a keybinding for both of the above commands
 
-By default files will be stored in `$XDG_PICTURES_DIR/Screenshots`, which typically means `~/Pictures/Screenshots`.
-Use `$ROFI_SCREENSHOT_DIR` environment variable to override this default.
+### Configuration
+| environment variable           | default value                   |                                                                                                                     |
+| ------------------------------ | ------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `$ROFI_SCREENSHOT_DIR`         | `$XDG_PICTURES_DIR/Screenshots` | By default files will be stored in `$XDG_PICTURES_DIR/Screenshots`, which typically means `~/Pictures/Screenshots`. |
+| `$ROFI_SCREENSHOT_DATE_FORMAT` | `+%d-%m-%Y %H:%M:%S`            | Possible alternative: `+%Y-%m-%d-%H-%M-%S`                                                                          |
 
 ### Dependencies
 

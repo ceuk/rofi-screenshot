@@ -11,7 +11,7 @@
 screenshot_directory="${ROFI_SCREENSHOT_DIR:-${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots}"
 
 # Default date format
-default_date_format="+%d-%m-%Y %H:%M:%S"
+default_date_format="${ROFI_SCREENSHOT_DATE_FORMAT:-"+%d-%m-%Y %H:%M:%S"}"
 
 # set ffmpeg defaults
 ffmpeg() {

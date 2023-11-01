@@ -47,6 +47,21 @@ crtf() {
   notify-send --app-name="screenshot" "Screenshot" "Region saved to ${screenshot_directory//${HOME}/~}/$dt.png"
 }
 
+cwtc() {
+  notify-send --app-name="screenshot" "Screenshot" "Select a window to capture"
+  ffcast -q -w png /tmp/screenshot_clip.png
+  xclip -selection clipboard -t image/png /tmp/screenshot_clip.png
+  rm /tmp/screenshot_clip.png
+  notify-send --app-name="screenshot" "Screenshot" "Window copied to Clipboard"
+}
+
+cwtf() {
+  notify-send --app-name="screenshot" "Screenshot" "Select a window to capture"
+  dt=$1
+  ffcast -q "$(slop -n -f '-g %g ')" png "$screenshot_directory/$dt.png"
+  notify-send --app-name="screenshot" "Screenshot" "Window saved to ${screenshot_directory//${HOME}/~}/$dt.png"
+}
+
 cstc() {
   ffcast -q png /tmp/screenshot_clip.png
   xclip -selection clipboard -t image/png /tmp/screenshot_clip.png
@@ -107,6 +122,8 @@ stop_recording() {
 get_options() {
   echo "  Region  Clip"
   echo "  Region  File"
+  echo "  Window  Clip"
+  echo "  Window  File"
   echo "  Screen  Clip"
   echo "  Screen  File"
   echo "  Region  File (GIF)"
@@ -212,6 +229,12 @@ main() {
       ;;
     '  Region  File')
       crtf "$dt"
+      ;;
+    '  Window  Clip')
+      cwtc
+      ;;
+    '  Window  File')
+      cwtf "$dt"
       ;;
     '  Screen  Clip')
       cstc
